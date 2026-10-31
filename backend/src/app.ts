@@ -13,6 +13,7 @@ import { taxesRouter } from './modules/taxes/taxes.routes.js';
 import { catalogRouter } from './modules/catalog/catalog.routes.js';
 import { plansRouter } from './modules/plans/plans.routes.js';
 import { templatesRouter } from './modules/templates/templates.routes.js';
+import { subscriptionRouter } from './modules/subscriptions/subscription.routes.js';
 
 export function createApp(): express.Application {
   const app = express();
@@ -90,6 +91,7 @@ export function createApp(): express.Application {
   app.use('/api', catalogRouter);
   app.use('/api/plans', plansRouter);
   app.use('/api/quotation-templates', templatesRouter);
+  app.use('/api/subscriptions', subscriptionRouter);
 
   // 8. 404 handler for undefined routes
   app.use((req, _res, next) => {
