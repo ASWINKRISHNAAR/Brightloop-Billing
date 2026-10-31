@@ -9,6 +9,10 @@ import { eventBus } from './common/events.js';
 import { NotFoundError } from './common/errors.js';
 import { authRouter } from './modules/auth/auth.routes.js';
 import { staffRouter } from './modules/staff/staff.routes.js';
+import { taxesRouter } from './modules/taxes/taxes.routes.js';
+import { catalogRouter } from './modules/catalog/catalog.routes.js';
+import { plansRouter } from './modules/plans/plans.routes.js';
+import { templatesRouter } from './modules/templates/templates.routes.js';
 
 export function createApp(): express.Application {
   const app = express();
@@ -82,6 +86,10 @@ export function createApp(): express.Application {
   // Mount Feature Modules
   app.use('/api/auth', authRouter);
   app.use('/api/staff', staffRouter);
+  app.use('/api/taxes', taxesRouter);
+  app.use('/api', catalogRouter);
+  app.use('/api/plans', plansRouter);
+  app.use('/api/quotation-templates', templatesRouter);
 
   // 8. 404 handler for undefined routes
   app.use((req, _res, next) => {
