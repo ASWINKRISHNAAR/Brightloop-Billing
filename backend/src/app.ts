@@ -7,6 +7,8 @@ import { config } from './common/config.js';
 import { errorMiddleware } from './common/errorMiddleware.js';
 import { eventBus } from './common/events.js';
 import { NotFoundError } from './common/errors.js';
+import { authRouter } from './modules/auth/auth.routes.js';
+import { staffRouter } from './modules/staff/staff.routes.js';
 
 export function createApp(): express.Application {
   const app = express();
@@ -77,10 +79,9 @@ export function createApp(): express.Application {
     eventBus.registerClient(res);
   });
 
-  // We will mount API module routes here in upcoming phases:
-  // app.use('/api/auth', authRoutes);
-  // app.use('/api/customers', customerRoutes);
-  // ...
+  // Mount Feature Modules
+  app.use('/api/auth', authRouter);
+  app.use('/api/staff', staffRouter);
 
   // 8. 404 handler for undefined routes
   app.use((req, _res, next) => {
