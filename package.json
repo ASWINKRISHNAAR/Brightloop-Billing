@@ -1,0 +1,23 @@
+{
+  "name": "brightloop-billing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Production-grade Subscription Management and Recurring Billing Platform",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=backend",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "typecheck": "npm run typecheck --workspaces",
+    "migrate": "npm run migrate --workspace=backend",
+    "seed": "npm run seed --workspace=backend"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3"
+  }
+}

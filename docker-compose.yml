@@ -1,0 +1,64 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: brightloop_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: brightloop
+      POSTGRES_PASSWORD: brightloop_pass
+      POSTGRES_DB: brightloop_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./database/migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U brightloop -d brightloop_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    container_name: brightloop_mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025" # SMTP
+      - "8025:8025" # Web UI
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: brightloop_backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      DATABASE_URL: postgresql://brightloop:brightloop_pass@db:5432/brightloop_db
+      JWT_ACCESS_SECRET: brightloop_dev_access_secret_super_secure_32_chars_min!
+      JWT_REFRESH_SECRET: brightloop_dev_refresh_secret_super_secure_32_chars_min!
+      SMTP_HOST: mailhog
+      SMTP_PORT: 1025
+      CORS_ORIGIN: http://localhost:5173
+    ports:
+      - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: brightloop_frontend
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
