@@ -36,11 +36,14 @@ export const errorMiddleware: ErrorRequestHandler = (
       fieldErrors[path].push(issue.message);
     }
 
+    const messages = err.issues.map((i) => i.message).filter(Boolean);
+    const detailMsg = messages.length > 0 ? messages.join('. ') : 'Request validation failed';
+
     res.status(400).json({
       type: 'https://brightloop.io/errors/validation-error',
       title: 'ValidationError',
       status: 400,
-      detail: 'Request validation failed',
+      detail: detailMsg,
       errors: fieldErrors,
       requestId
     });

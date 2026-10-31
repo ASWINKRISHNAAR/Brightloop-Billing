@@ -45,7 +45,8 @@ export async function query<T extends pg.QueryResultRow = any>(
   client?: DbClient
 ): Promise<pg.QueryResult<T>> {
   const db = client || getPool();
-  return db.query<T>(text, params);
+  const sql = (db as any).__isPgMem ? text.replace(/SKIP LOCKED/gi, '') : text;
+  return db.query<T>(sql, params);
 }
 
 /**

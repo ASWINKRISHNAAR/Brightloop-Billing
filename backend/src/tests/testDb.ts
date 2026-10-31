@@ -41,6 +41,7 @@ export function setupTestDatabase(): pg.Pool {
   // Create mock pool from pg-mem adapter
   const adapter = db.adapters.createPg();
   const mockPool = new adapter.Pool() as unknown as pg.Pool;
+  (mockPool as any).__isPgMem = true;
 
   setPool(mockPool);
   memoryDb = db;

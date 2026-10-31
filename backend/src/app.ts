@@ -14,6 +14,9 @@ import { catalogRouter } from './modules/catalog/catalog.routes.js';
 import { plansRouter } from './modules/plans/plans.routes.js';
 import { templatesRouter } from './modules/templates/templates.routes.js';
 import { subscriptionRouter } from './modules/subscriptions/subscription.routes.js';
+import { discountsRouter } from './modules/discounts/discounts.routes.js';
+import { billingRouter } from './billing/billing.routes.js';
+import { customersRouter } from './modules/customers/customers.routes.js';
 
 export function createApp(): express.Application {
   const app = express();
@@ -92,6 +95,23 @@ export function createApp(): express.Application {
   app.use('/api/plans', plansRouter);
   app.use('/api/quotation-templates', templatesRouter);
   app.use('/api/subscriptions', subscriptionRouter);
+  app.use('/api/discounts', discountsRouter);
+  app.use('/api/billing', billingRouter);
+  app.use('/api/customers', customersRouter);
+
+  // Canonical REST shortcuts mapping to billing endpoints
+  app.use('/api/invoices', (req, res, next) => {
+    req.url = req.url === '/' ? '/invoices' : `/invoices${req.url}`;
+    billingRouter(req, res, next);
+  });
+  app.use('/api/payments', (req, res, next) => {
+    req.url = req.url === '/' ? '/payments' : `/payments${req.url}`;
+    billingRouter(req, res, next);
+  });
+  app.use('/api/reports', (req, res, next) => {
+    req.url = req.url === '/' ? '/reports/summary' : `/reports${req.url}`;
+    billingRouter(req, res, next);
+  });
 
   // 8. 404 handler for undefined routes
   app.use((req, _res, next) => {
